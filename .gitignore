@@ -1,2 +1,5 @@
 # ignore env variables
 .env
+
+# ignore logs
+*.log
