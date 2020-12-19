@@ -1,6 +1,5 @@
 import os
 import sys
-from datetime import datetime
 from dotenv import load_dotenv
 import logging
 
@@ -17,13 +16,14 @@ load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 target_guild = os.getenv('DISCORD_GUILD')
 
+# Presences and Members are required additional permissions
+# ex. members is needed for the on_member_join() event to be registered
 intents = discord.Intents.default()
 intents.presences = True
 intents.members = True
+intents.reactions = True
 
-# either client, client.run(token)
-# client = discord.Client()
-# or bot, bot.run(token)
+# Initialize bot
 client = commands.Bot(command_prefix='!', intents=intents)
 
 
@@ -55,7 +55,7 @@ async def on_member_join(member):
     with a reaction in order to access the rest of the discord.
     """
     role = discord.utils.get(member.guild.roles, name='Astral Sea')
-    logging.info(f'Add {member.display_name} to {role}')
+    logging.info(f'Adding {member.display_name} to {role}')
     await member.add_roles(role)
 
     # Saving the below because I think I want to implement this functionality
@@ -72,6 +72,26 @@ async def on_error(event, *args, **kwargs):
         logging.error(f'Unhandled message: {args[0]}\n{trace}')
     else:
         raise
+
+
+@client.event
+async def on_raw_reaction_add(payload):
+    reaction = payload.emoji
+    user = await client.fetch_user(payload.user_id)
+    channel = await client.fetch_channel(payload.channel_id)
+
+    try:
+        member = payload.member
+        # This section handles the welcome role add reactions
+        welcome_id = discord.utils.get(member.guild.channels, name="welcome")
+        if channel == welcome_id:
+            logging.info(f"{user.name} reacted to welcome message")
+            if reaction.name == "💩":
+                role = discord.utils.get(member.guild.roles, name="Commoner")
+                logging.info(f"Adding {user.name} to {role}")
+                await member.add_roles(role)
+    except ValueError:
+        logging.warning("No member payload available")
 
 
 def main():
