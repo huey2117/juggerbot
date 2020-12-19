@@ -26,7 +26,6 @@ intents.reactions = True
 # Initialize bot
 client = commands.Bot(command_prefix='!', intents=intents)
 
-
 @client.event
 async def on_connect():
     """
@@ -85,9 +84,24 @@ async def on_raw_reaction_add(payload):
         # This section handles the welcome role add reactions
         welcome_id = discord.utils.get(member.guild.channels, name="welcome")
         if channel == welcome_id:
+            role = None
             logging.info(f"{user.name} reacted to welcome message")
-            if reaction.name == "💩":
-                role = discord.utils.get(member.guild.roles, name="Commoner")
+            print(f"{user.name} reacted with {reaction}: {reaction.id}")
+
+            # Create key value pairs of reaction id and role name pairs
+            reaction_to_role = {}
+            role_reactions = ['wow', 'd20', 'mtg', 'sus', 'press_F']
+            role_names = ['WoW', 'Tabletop', 'MtG', 'sus AF', 'Commoner']
+            for react, rname in zip(role_reactions, role_names):
+                for e in client.emojis:
+                    if e.name == react:
+                        reaction_id = client.get_emoji(e.id)
+                        reaction_to_role[reaction_id.id] = discord.utils.get(
+                            member.guild.roles,
+                            name=rname
+                        )
+            if reaction.id in reaction_to_role:
+                role = reaction_to_role[reaction.id]
                 logging.info(f"Adding {user.name} to {role}")
                 await member.add_roles(role)
     except ValueError:
