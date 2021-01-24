@@ -116,13 +116,13 @@ async def on_raw_reaction_add(payload):
                         f"{user.name} selected {role} without proper "
                         f"permissions. Sending them a message."
                     )
-                    message = f"Hi! Thanks for joining our server. Please do step 5 before selecting other roles!"
+                    message = f"Hi! Thanks for joining our server. Please do" \
+                              f" step 5 before selecting other roles!"
                     await member.create_dm()
                     await member.dm_channel.send(message)
                 else:                    
                     logging.info(f"Adding {user.name} to {role}")
                     await member.add_roles(role)
-
 
 
 @client.event
@@ -143,6 +143,7 @@ async def on_raw_reaction_remove(payload):
     )
     # This section handles the welcome role removal reactions
     welcome_id = discord.utils.get(member.guild.channels, name="welcome")
+    base_role = discord.utils.get(member.guild.roles, name="Commoner")
     if channel == welcome_id:
         logging.info(f"{user.name} removed a reaction to welcome message")
 
@@ -160,7 +161,10 @@ async def on_raw_reaction_remove(payload):
                     )
         if reaction.id in reaction_to_role:
             role = reaction_to_role[reaction.id]
-            if role in member.roles:
+            if role == base_role:
+                logging.info(f"Not removing Commoner role from {user.name}")
+                pass
+            elif role in member.roles:
                 logging.info(f"Removing {user.name} from {role}")
                 await member.remove_roles(role)
             else:
