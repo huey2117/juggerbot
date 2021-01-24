@@ -4,5 +4,6 @@
 # ignore logs
 *.log
 
-# ignore .idea
+# ignore .idea and .vscode
 .idea/*
+.vscode/*
