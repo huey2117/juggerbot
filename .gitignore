@@ -3,3 +3,6 @@
 
 # ignore logs
 *.log
+
+# ignore .idea
+.idea/*
