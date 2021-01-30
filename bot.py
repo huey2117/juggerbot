@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 import logging
+from datetime import date, timedelta
 
 import discord
 from discord.ext import commands
@@ -173,6 +174,14 @@ async def on_raw_reaction_remove(payload):
                     f"as they are not a member."
                     )
 
+@client.command()
+async def psl(ctx):
+    x = date.today() - date(2020, 8, 15)
+    await ctx.send(str(x.days) + " until the Pumpkin Spice Latte returns! Get ready!")
+
+@client.command()
+async def ping(ctx):
+    await ctx.send("Pong!")
 
 def main():
     client.run(token)
