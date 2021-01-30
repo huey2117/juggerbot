@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 "discord.py" = "*"
 python-dotenv = "*"
+pipfile = "*"
+youtube-dl = "*"
+ffmpeg = "*"
 
 [requires]
 python_version = "3.8"

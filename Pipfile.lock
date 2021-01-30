@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e52806829cb4780b85d60ad56771349ae37ab96d797673935bc693a008995737"
+            "sha256": "a3789f0b67dd92bcb980c0a202883b3c4b9553b79ae2cfe6b6720c70bd1db58b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -66,6 +66,13 @@
             "index": "pypi",
             "version": "==1.5.1"
         },
+        "ffmpeg": {
+            "hashes": [
+                "sha256:6931692c890ff21d39938433c2189747815dca0c60ddc7f9bb97f199dba0b5b9"
+            ],
+            "index": "pypi",
+            "version": "==1.4"
+        },
         "idna": {
             "hashes": [
                 "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6",
@@ -125,8 +132,21 @@
                 "sha256:f18d68f2be6bf0e89f1521af2b1bb46e66ab0018faafa81d70f358153170a317",
                 "sha256:f379b7f83f23fe12823085cd6b906edc49df969eb99757f58ff382349a3303c6"
             ],
+<<<<<<< Updated upstream
             "markers": "python_version >= '3.5'",
             "version": "==1.5.1"
+=======
+            "markers": "python_version >= '3.6'",
+            "version": "==1.6.3"
+        },
+        "youtube-dl": {
+            "hashes": [
+                "sha256:982ba6d597ffa7abe00da7f0823b49edd49bca95b4ef64059c56a9f89613d9f4",
+                "sha256:d0dc8abd6e89f81171c66d2ffc073eaabf9d5fc6de94e244da36f92a75cc52d7"
+            ],
+            "index": "pypi",
+            "version": "==2021.1.24.1"
+>>>>>>> Stashed changes
         }
     },
     "develop": {}
