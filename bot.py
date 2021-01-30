@@ -155,14 +155,17 @@ async def on_raw_reaction_remove(payload):
                              f"as they are not a member."
                              )
 
+
 @client.command()
 async def psl(ctx):
     x = date.today() - date(2020, 8, 15)
     await ctx.send(str(x.days) + " until the Pumpkin Spice Latte returns! Get ready!")
 
+
 @client.command()
 async def ping(ctx):
     await ctx.send("Pong!")
+
 
 # Music Section
 @client.command()
@@ -182,13 +185,16 @@ async def play(ctx, url: str):
         user_channel = ctx.message.author.voice.channel
         voice_channel = discord.utils.get(
             ctx.guild.voice_channels,
-            id=user_channel
+            name=user_channel.name
         )
+        print("Using user's channel")
+        print(user_channel, voice_channel)
     except AttributeError:
         voice_channel = discord.utils.get(
             ctx.guild.voice_channels,
             name='General / Among Us'
         )
+        print("Default channel")
     await voice_channel.connect()
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
 
