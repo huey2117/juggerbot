@@ -84,10 +84,13 @@ async def on_raw_reaction_add(payload):
     member = payload.member
     # This section handles the welcome role add reactions
     welcome_id = discord.utils.get(member.guild.channels, name="welcome")
+    # base_role is currently Commoner and is required to select
+    # the other roles. Enforcing this requirement later
+    base_role = discord.utils.get(member.guild.roles, name="Commoner")
     if channel == welcome_id:
         logging.info(f"{user.name} reacted to welcome message")
 
-        # Create key value pairs of reaction id and role name pairs
+        # Create key value pairs of reaction id and role name
         reaction_to_role = {}
         role_reactions = ['wow', 'd20', 'mtg', 'sus', 'press_F']
         role_names = ['WoW', 'Tabletop', 'MtG', 'sus AF', 'Commoner']
@@ -99,15 +102,28 @@ async def on_raw_reaction_add(payload):
                         member.guild.roles,
                         name=rname
                     )
+        # Check that reaction emoji is one we care about
         if reaction.id in reaction_to_role:
             role = reaction_to_role[reaction.id]
             if role in member.roles:
-                logging.info(f"Not adding {user.name} to {role} "
-                             f"as they are already a member."
-                             )
+                logging.info(
+                    f"Not adding {user.name} to {role} "
+                    f"as they are already a member."
+                    )
             else:
-                logging.info(f"Adding {user.name} to {role}")
-                await member.add_roles(role)
+                if role != base_role and base_role not in member.roles:
+                    # User must have base_role to select other roles
+                    logging.info(
+                        f"{user.name} selected {role} without proper "
+                        f"permissions. Sending them a message."
+                    )
+                    message = f"Hi! Thanks for joining our server. Please do" \
+                              f" step 5 before selecting other roles!"
+                    await member.create_dm()
+                    await member.dm_channel.send(message)
+                else:                    
+                    logging.info(f"Adding {user.name} to {role}")
+                    await member.add_roles(role)
 
 
 @client.event
@@ -122,12 +138,13 @@ async def on_raw_reaction_remove(payload):
     # only one member should match a specific action
     member = payload.member or (
         [m
-         for m in client.get_all_members()
-         if m.id == user.id
-         ][0]
+            for m in client.get_all_members()
+            if m.id == user.id
+        ][0]
     )
     # This section handles the welcome role removal reactions
     welcome_id = discord.utils.get(member.guild.channels, name="welcome")
+    base_role = discord.utils.get(member.guild.roles, name="Commoner")
     if channel == welcome_id:
         logging.info(f"{user.name} removed a reaction to welcome message")
 
@@ -145,13 +162,17 @@ async def on_raw_reaction_remove(payload):
                     )
         if reaction.id in reaction_to_role:
             role = reaction_to_role[reaction.id]
-            if role in member.roles:
+            if role == base_role:
+                logging.info(f"Not removing Commoner role from {user.name}")
+                pass
+            elif role in member.roles:
                 logging.info(f"Removing {user.name} from {role}")
                 await member.remove_roles(role)
             else:
-                logging.info(f"Not removing {user.name} from {role} "
-                             f"as they are not a member."
-                             )
+                logging.info(
+                    f"Not removing {user.name} from {role} "
+                    f"as they are not a member."
+                    )
 
 @client.command()
 async def psl(ctx):

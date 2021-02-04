@@ -4,9 +4,6 @@
 # ignore logs
 *.log
 
-# ignore vscode settings
-*.vscode
-
-# ignore idea directory
-## not sure what generated this
-*.idea
+# ignore .idea and .vscode
+.idea/*
+.vscode/*
